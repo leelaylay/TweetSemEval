@@ -7,12 +7,14 @@
 ## Run Experiments
 
 ```bash
+# install the environment
 conda create -n allennlp python=3.6
 source activate allennlp
 pip install -r requirements.txt
 ```
 
 ```bash
+# run the program
 chmod +x run.sh  && ./run.sh
 ```
 
