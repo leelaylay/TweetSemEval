@@ -24,8 +24,7 @@ local hidden_dim = 128;
         "weight_file": "https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x1024_128_2048cnn_1xhighway/elmo_2x1024_128_2048cnn_1xhighway_weights.hdf5",
         "do_layer_norm": false,
         "dropout": 0.5
-      }
-    },
+      },
     "title_encoder": {
       "type": "lstm",
       "embedding_dim": embedding_dim,

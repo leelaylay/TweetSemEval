@@ -18,11 +18,8 @@ class SemEvalClassifier(Model):
     """This ``Model`` performs text classification for SemEval 2017 task 4 subset A.
     """
 
-    def __init__(self,
-                 word_embeddings: TextFieldEmbedder,
-                 encoder: Seq2VecEncoder,
-                 vocab: Vocabulary,
-                 positive_label: int = 3) -> None:
+    def __init__(self, word_embeddings: TextFieldEmbedder,
+                 encoder: Seq2VecEncoder, vocab: Vocabulary) -> None:
         super().__init__(vocab)
         # We need the embeddings to convert word IDs to their vector representations
         self.word_embeddings = word_embeddings
@@ -31,12 +28,18 @@ class SemEvalClassifier(Model):
 
         # After converting a sequence of vectors to a single vector, we feed it into
         # a fully-connected linear layer to reduce the dimension to the total number of labels.
-        self.linear = torch.nn.Linear(in_features=encoder.get_output_dim(),
-                                      out_features=vocab.get_vocab_size('labels'))
+        self.linear = torch.nn.Linear(
+            in_features=encoder.get_output_dim(),
+            out_features=vocab.get_vocab_size('labels'))
 
         # Monitor the metrics - we use accuracy, as well as prec, rec, f1 for 4 (very positive)
         self.accuracy = CategoricalAccuracy()
-        self.f1_measure = F1Measure(positive_label)
+        self.f1_measure_positive = F1Measure(
+            vocab.get_token_index("positive", "labels"))
+        self.f1_measure_negative = F1Measure(
+            vocab.get_token_index("negative", "labels"))
+        self.f1_measure_neutral = F1Measure(
+            vocab.get_token_index("neutral", "labels"))
 
         # We use the cross entropy loss because this is a classification task.
         # Note that PyTorch's CrossEntropyLoss combines softmax and log likelihood loss,
@@ -62,16 +65,29 @@ class SemEvalClassifier(Model):
         output = {"logits": logits}
         if label is not None:
             self.accuracy(logits, label)
-            self.f1_measure(logits, label)
+            self.f1_measure_positive(logits, label)
+            self.f1_measure_negative(logits, label)
+            self.f1_measure_neutral(logits, label)
             output["loss"] = self.loss_function(logits, label)
-        
-        return output
 
+        return output
 
     @overrides
     def get_metrics(self, reset: bool = False) -> Dict[str, float]:
-        precision, recall, f1_measure = self.f1_measure.get_metric(reset)
-        return {'accuracy': self.accuracy.get_metric(reset),
-                'precision': precision,
-                'recall': recall,
-                'f1_measure': f1_measure}
+        _, recall_positive, f1_measure_positive = self.f1_measure_positive.get_metric(
+            reset)
+        _, recall_negative, f1_measure_negative = self.f1_measure_negative.get_metric(
+            reset)
+        _, recall_neutral, _ = self.f1_measure_neutral.get_metric(reset)
+        accuracy = self.accuracy.get_metric(reset)
+
+        avg_recall = (recall_positive + recall_negative + recall_neutral) / 3.0
+        macro_avg_f1_measure = (
+            f1_measure_positive + f1_measure_negative) / 2.0
+
+        results = {
+            'accuracy': accuracy,
+            'avg_recall': avg_recall,
+            'f1_measure': macro_avg_f1_measure
+        }
+        return results

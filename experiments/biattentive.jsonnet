@@ -1,6 +1,6 @@
 // For example, you can write variable declrations as follows:
-local embedding_dim = 300;
-local hidden_dim = 100;
+local embedding_dim = 100;
+local hidden_dim = 200;
 
 {
   // data reader config
@@ -12,22 +12,21 @@ local hidden_dim = 100;
   
   // model config
   "model": {
-    "type": "semeval_classifier",
+    "type": "biattentive_classification_network",
     "word_embeddings": {
         "tokens": {
           "type": "embedding",
-          "pretrained_file": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/glove/glove.840B.300d.txt.gz",
+          "pretrained_file": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/glove/glove.6B.100d.txt.gz",
           "embedding_dim": embedding_dim,
           "trainable": false
       },
       
     },
     "encoder": {
-      "type": "lstm",
+      "type": "stacked_bidirectional_lstm",
       "input_size": embedding_dim,
       "hidden_size": hidden_dim,
       "num_layers": 2,
-      "bidirectional": true
     }
   },
 
