@@ -1,1 +1,1 @@
-allennlp train experiments/default.jsonnet -s output --include-package SemEval
+rm -rf output && allennlp train experiments/default.jsonnet -s output --include-package SemEval

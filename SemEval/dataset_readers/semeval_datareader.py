@@ -59,14 +59,17 @@ class SemEvalDatasetReader(DatasetReader):
             with open(cached_path(file_path), "r") as data_file:
                 logger.info("Reading instances from lines in file at: %s",
                             file_path)
-                for line in data_file:
+                for index, line in enumerate(data_file):
                     columns = line.rstrip().split(self.SEPARATOR)
                     if not columns:
                         continue
+                    if len(columns)<3:
+                        logger.info(index)
+                        logger.info(columns)
                     tweet_id = columns[0]
                     sentiment = columns[1]
                     text = columns[2:]
-                    text = clean_text(''.join(text))
+                    text = self.clean_text(''.join(text))
                     if tweet_id not in self.data:
                         self.data.add(tweet_id)
                         yield self.text_to_instance(sentiment, text)
