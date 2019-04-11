@@ -1,22 +1,20 @@
-from typing import Dict
+import glob
+import html
 import json
 import logging
 import os
-import glob
 import re
 import string
-import html
-
-from nltk.corpus import stopwords
-
-from overrides import overrides
+from typing import Dict
 
 from allennlp.common.file_utils import cached_path
 from allennlp.data.dataset_readers.dataset_reader import DatasetReader
 from allennlp.data.fields import LabelField, TextField
 from allennlp.data.instance import Instance
+from allennlp.data.token_indexers import SingleIdTokenIndexer, TokenIndexer
 from allennlp.data.tokenizers import Tokenizer, WordTokenizer
-from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
+from nltk.corpus import stopwords
+from overrides import overrides
 
 # import SemEval
 # from SemEval.models.semeval_classifier import SemEvalClassifier
@@ -82,7 +80,7 @@ class SemEvalDatasetReader(DatasetReader):
         # pylint: disable=arguments-differ
         tokenized_text = self._tokenizer.tokenize(text)
         text_field = TextField(tokenized_text, self._token_indexers)
-        fields = {'text': text_field}
+        fields = {'tokens': text_field}
         if sentiment is not None:
             fields['label'] = LabelField(sentiment)
         return Instance(fields)

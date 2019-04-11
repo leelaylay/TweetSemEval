@@ -3,13 +3,13 @@ from typing import Dict, Optional
 import numpy
 import torch
 import torch.nn.functional as F
-
 from allennlp.common.checks import ConfigurationError
 from allennlp.data import Vocabulary
 from allennlp.models.model import Model
 from allennlp.modules import FeedForward, Seq2VecEncoder, TextFieldEmbedder
 from allennlp.nn import InitializerApplicator, RegularizerApplicator, util
-from allennlp.training.metrics import CategoricalAccuracy
+from allennlp.nn.util import get_text_field_mask
+from allennlp.training.metrics import CategoricalAccuracy, F1Measure
 from overrides import overrides
 
 
@@ -64,6 +64,8 @@ class SemEvalClassifier(Model):
             self.accuracy(logits, label)
             self.f1_measure(logits, label)
             output["loss"] = self.loss_function(logits, label)
+        
+        return output
 
 
     @overrides

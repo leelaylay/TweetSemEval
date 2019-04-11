@@ -24,8 +24,10 @@ local hidden_dim = 200;
     },
     "encoder": {
       "type": "lstm",
-      "embedding_dim": embedding_dim,
-      "hidden_size": hidden_dim
+      "input_size": embedding_dim,
+      "hidden_size": hidden_dim,
+      "num_layers": 2,
+      "bidirectional": true
     }
   },
 
