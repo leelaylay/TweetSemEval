@@ -23,7 +23,7 @@ local hidden_dim = 100;
       
     },
     "encoder": {
-      "type": "stacked_bidirectional_lstm",
+      "type": "lstm",
       "input_size": embedding_dim,
       "hidden_size": hidden_dim,
       "num_layers": 2,
