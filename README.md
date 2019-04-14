@@ -19,8 +19,26 @@ chmod +x run.sh  && ./run.sh
 ```
 
 ## Experiments Results
+
+
 | Models                                      | F1-score |
 |---------------------------------------------|----------|
-| LSTMs+CNNs ensemble with multiple conv. ops | 0.685    |
+| GloVe(No Grad 6B100D) + 2 BiLSTM  |  0.548   |
+| GloVe(No Grad 6B300D) + 2 BiLSTM  |  0.547   |
+| GloVe(No Grad 42B300D) + 2 BiLSTM  |  0.559   |
+| GloVe(No Grad 840B300D) + 2 BiLSTM  |  0.629   |
+| GloVe(No Grad 27B200D Twitter) + 2 BiLSTM  |  0.586   |
+
+
+| Models                                      | F1-score |
+|---------------------------------------------|----------|
+| LSTMs+CNNs ensemble with multiple conv. ops (**SOTA**) | **0.685**    |
 | Deep Bi-LSTM+attention                      | 0.677    |
-| Our Model |    |
+| GloVe(No Grad) + 2 BiLSTM  |  0.629   |
+| GloVe(With Grad) + 2 BiLSTM  |  0.642   |
+| ELMo(No Grad) + 2 BiLSTM  |  0.614   |
+| ELMo(With Grad) + 2 BiLSTM  |  0.609   |
+| BERT(No Grad) + 2 BiLSTM  | 0.599   |
+| BERT(With Grad) + 2 BiLSTM  |  0.480  |
+| GloVe+ Bi-LSTM+attention  |  0.665   |
+| GloVe+ ELMo + BCN  |  0.682   |

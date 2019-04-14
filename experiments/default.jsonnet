@@ -63,7 +63,7 @@ local hidden_dim = 100;
     "cuda_device": 0,
     "optimizer": {
       "type": "adam",
-      "lr": 0.001
+      "lr": 0.0001
     }
   }
 }
