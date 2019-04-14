@@ -20,14 +20,14 @@ chmod +x run.sh  && ./run.sh
 ```
 
 ## Experiments Results
-The first two models are the SOTA models for this task (ensemble and single)(as far as I know). I just use AllenNLP to implement the other models below. 
+In the table, the first two models are the SOTA models for this task (ensemble and single)(as far as I know). I use AllenNLP to implement the other models below.
 
 I found that GloVe is pretty for single embedding compared to the other embeddings. The model `GloVe + Bi-LSTM + attention` is similar to the model `Deep Bi-LSTM+attention`, and the results are similar. The model `GloVe + ELMo + BCN` achieves 0.682 F1 score with single model which is also compatible to the model `LSTMs+CNNs ensemble with multiple conv. ops`.
 
 | Models                                      | F1-score |
 |---------------------------------------------|----------|
-| [LSTMs+CNNs ensemble with multiple conv. ops](https://arxiv.org/abs/1704.06125) (**SOTA Ensemble**) | **0.685**    |
-| [Deep Bi-LSTM+attention](https://www.aclweb.org/anthology/papers/S/S17/S17-2126/)    (**SOTA Single model**)     | 0.677    |
+| [LSTMs+CNNs ensemble with multiple conv. ops](https://arxiv.org/abs/1704.06125) (**Ensemble**) | **0.685**    |
+| [Deep Bi-LSTM+attention](https://www.aclweb.org/anthology/papers/S/S17/S17-2126/)    (**Single model**)     | 0.677    |
 | GloVe(No Grad) + 2 BiLSTM  |  0.629   |
 | GloVe(With Grad) + 2 BiLSTM  |  0.642   |
 | ELMo(No Grad) + 2 BiLSTM  |  0.614   |
