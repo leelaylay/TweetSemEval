@@ -18,7 +18,7 @@ local hidden_dim = 50;
           "type": "embedding",
           "pretrained_file": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/glove/glove.6B.100d.txt.gz",
           "embedding_dim": embedding_dim,
-          "trainable": true
+          "trainable": false
       },
       
     },
