@@ -12,23 +12,40 @@ local hidden_dim = 100;
   
   // model config
   "model": {
-    "type": "semeval_classifier",
-    "word_embeddings": {
-        "tokens": {
-          "type": "embedding",
-          "pretrained_file": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/glove/glove.840B.300d.txt.gz",
-          "embedding_dim": embedding_dim,
-          "trainable": true
+    "type": "semeval_classifier_attention",
+    "text_field_embedder": {
+        "token_embedders": {
+          "tokens": {
+              "pretrained_file": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/glove/glove.840B.300d.txt.gz",
+              "type": "embedding",
+              "embedding_dim": 300,
+              "trainable": false
+          }
+        }
       },
-      
-    },
-    "encoder": {
-      "type": "lstm",
-      "input_size": embedding_dim,
-      "hidden_size": hidden_dim,
-      "num_layers": 2,
-      "bidirectional": true
-    }
+      "embedding_dropout": 0.25,
+      "encoder": {
+        "type": "lstm",
+        "input_size": 300,
+        "hidden_size": 300,
+        "num_layers": 1,
+        "bidirectional": true
+      },
+      "integrator": {
+        "type": "lstm",
+        "input_size": 1800,
+        "hidden_size": 300,
+        "num_layers": 1,
+        "bidirectional": true
+      },
+      "integrator_dropout": 0.1,
+      "output_layer": {
+          "input_dim": 2400,
+          "num_layers": 2,
+          "output_dims": [100, 3],
+          "pool_sizes": 4,
+          "dropout": [0.2, 0.0]
+      }
   },
 
   // data iterator config
@@ -40,11 +57,13 @@ local hidden_dim = 100;
 
   // trainer config
   "trainer": {
-    "num_epochs": 40,
-    "patience": 10,
-    "cuda_device": 1,
+    "num_epochs": 50,
+    "patience": 5,
+    "grad_norm": 5.0,
+    "cuda_device": 0,
     "optimizer": {
       "type": "adam",
+      "lr": 0.001
     }
   }
 }

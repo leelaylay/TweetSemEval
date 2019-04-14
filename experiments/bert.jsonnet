@@ -1,6 +1,6 @@
 // For example, you can write variable declrations as follows:
-local embedding_dim = 768 + 128;
-local hidden_dim = 200;
+local embedding_dim = 768;
+local hidden_dim = 100;
 
 {
   // data reader config
@@ -12,10 +12,6 @@ local hidden_dim = 200;
         "pretrained_model":"bert-base-uncased",
         "do_lowercase": false,
         "use_starting_offsets": true
-      },
-      "token_characters": {
-        "type": "characters",
-        "min_padding_length": 3
       }
     }
   },
@@ -28,26 +24,12 @@ local hidden_dim = 200;
     "word_embeddings": {
       "allow_unmatched_keys": true,
         "embedder_to_indexer_map": {
-            "tokens": ["tokens", "tokens-offsets"],
-            "token_characters": ["token_characters"],
+            "tokens": ["tokens", "tokens-offsets"]
         },
         "tokens": {
           "type": "bert-pretrained",
           "pretrained_model": "bert-base-uncased",
-          "requires_grad": false
-        },
-        "token_characters": {
-          "type": "character_encoding",
-          "embedding": {
-            "embedding_dim": 16
-          },
-          "encoder": {
-            "type": "cnn",
-            "embedding_dim": 16,
-            "num_filters": 128,
-            "ngram_filter_sizes": [3],
-            "conv_layer_activation": "relu"
-            }
+          "requires_grad": true
         }
       },
     "encoder": {
@@ -63,14 +45,14 @@ local hidden_dim = 200;
   "iterator": {
     "type": "bucket",
     "sorting_keys":  [["tokens", "num_tokens"]],
-    "batch_size": 512
+    "batch_size": 128
   },
 
   // trainer config
   "trainer": {
     "num_epochs": 40,
     "patience": 10,
-    "cuda_device": 2,
+    "cuda_device": 0,
     "optimizer": {
       "type": "adam",
       // "lr": 0.001
