@@ -18,7 +18,7 @@ local hidden_dim = 100;
           "type": "embedding",
           "pretrained_file": "https://s3-us-west-2.amazonaws.com/allennlp/datasets/glove/glove.840B.300d.txt.gz",
           "embedding_dim": embedding_dim,
-          "trainable": false
+          "trainable": true
       },
       
     },
@@ -42,7 +42,7 @@ local hidden_dim = 100;
   "trainer": {
     "num_epochs": 40,
     "patience": 10,
-    "cuda_device": 0,
+    "cuda_device": 1,
     "optimizer": {
       "type": "adam",
     }

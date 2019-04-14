@@ -1,6 +1,6 @@
 // For example, you can write variable declrations as follows:
-local embedding_dim = 256;
-local hidden_dim = 128;
+local embedding_dim = 768 + 128;
+local hidden_dim = 200;
 
 {
   // data reader config
@@ -8,7 +8,14 @@ local hidden_dim = 128;
     "type": "SemEval2017-Task4-SubsetA",
     "token_indexers": {
       "tokens": {
-        "type": "elmo_characters"
+        "type": "bert-pretrained",
+        "pretrained_model":"bert-base-uncased",
+        "do_lowercase": false,
+        "use_starting_offsets": true
+      },
+      "token_characters": {
+        "type": "characters",
+        "min_padding_length": 3
       }
     }
   },
@@ -18,17 +25,37 @@ local hidden_dim = 128;
   // model config
   "model": {
     "type": "semeval_classifier",
-    "token_embedders": {
-        "type": "elmo_token_embedder",
-        "options_file": "https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x1024_128_2048cnn_1xhighway/elmo_2x1024_128_2048cnn_1xhighway_options.json",
-        "weight_file": "https://s3-us-west-2.amazonaws.com/allennlp/models/elmo/2x1024_128_2048cnn_1xhighway/elmo_2x1024_128_2048cnn_1xhighway_weights.hdf5",
-        "do_layer_norm": false,
-        "dropout": 0.5
+    "word_embeddings": {
+      "allow_unmatched_keys": true,
+        "embedder_to_indexer_map": {
+            "tokens": ["tokens", "tokens-offsets"],
+            "token_characters": ["token_characters"],
+        },
+        "tokens": {
+          "type": "bert-pretrained",
+          "pretrained_model": "bert-base-uncased",
+          "requires_grad": false
+        },
+        "token_characters": {
+          "type": "character_encoding",
+          "embedding": {
+            "embedding_dim": 16
+          },
+          "encoder": {
+            "type": "cnn",
+            "embedding_dim": 16,
+            "num_filters": 128,
+            "ngram_filter_sizes": [3],
+            "conv_layer_activation": "relu"
+            }
+        }
       },
-    "title_encoder": {
+    "encoder": {
       "type": "lstm",
-      "embedding_dim": embedding_dim,
-      "hidden_size": hidden_dim
+      "input_size": embedding_dim,
+      "hidden_size": hidden_dim,
+      "num_layers": 2,
+      "bidirectional": true
     }
   },
 
@@ -36,16 +63,17 @@ local hidden_dim = 128;
   "iterator": {
     "type": "bucket",
     "sorting_keys":  [["tokens", "num_tokens"]],
-    "batch_size": 64
+    "batch_size": 512
   },
 
   // trainer config
   "trainer": {
     "num_epochs": 40,
     "patience": 10,
-    "cuda_device": 0,
+    "cuda_device": 2,
     "optimizer": {
-      "type": "adam"
+      "type": "adam",
+      // "lr": 0.001
     }
   }
 }
