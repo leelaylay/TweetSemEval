@@ -1,6 +1,6 @@
 allennlp==0.8.3
 nltk==3.4.5
-numpy==1.16.2
+numpy==1.22.0
 overrides==1.9
 pandas==0.24.2
 torch==1.0.1.post2
